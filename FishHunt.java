@@ -31,7 +31,7 @@ public class FishHunt extends Application {
         //Créer l'interface graphique
         Pane root = setscene(primaryStage);
         afficherLogo(root);
-
+        // ceci est un test
 
         //System.out.println(scene.getX() + "," + scene.getY());
         //Canvas canvaFond = new Canvas(this.largeur, this.hauteur);
