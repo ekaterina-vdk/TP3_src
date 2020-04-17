@@ -18,7 +18,7 @@ public class FishHunt extends Application {
     private static boolean mort;   //État de la méduse (morte ou non)
 
     public static void main(String[] args){ launch(args); }
-
+    // ekat est miam
     @Override
     public void start(Stage primaryStage) {
             commencerJeu(primaryStage);
