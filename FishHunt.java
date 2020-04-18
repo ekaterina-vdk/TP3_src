@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -25,7 +27,7 @@ public class FishHunt extends Application {
     private int largeur = 640;  //Largeur du jeu
     private int hauteur = 480;  //Hauteur du jeu
     private static boolean mort;   //État de la méduse (morte ou non)
-
+    private Controleur controleur;
     public static void main(String[] args){ launch(args); }
 
     @Override
@@ -36,9 +38,9 @@ public class FishHunt extends Application {
     //Scène d'accueil
     public void commencerJeu(Stage primaryStage){
         mort = false;
-        // test
+        this.controleur = new Controleur();
         //Créer l'interface graphique
-        Pane root = setScene(primaryStage);
+        Pane root = Initi_scene(primaryStage);
 
         // Insérer Vbox dans le Panel pour le placement
         VBox vbox = new VBox();
@@ -86,17 +88,97 @@ public class FishHunt extends Application {
                 //jouer();
             }
         });
+        // Bouton multijoueur
+        Button boutonmulti = new Button();
+        boutonmulti.setText("Multijouer");
+        boutonmulti.setPrefWidth(200);
+        vb_bouttons.getChildren().add(boutonmulti);
+        boutonmulti.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Jouer multijoueur");
+                Multijouer_menu(primaryStage);
+            }
+        });
 
 
 
 
     }
 
+
+    public void Multijouer_menu(Stage primaryStage){
+        //Créer l'interface graphique
+        Pane root = Initi_scene(primaryStage);
+
+        // Insérer Vbox dans le Panel pour le placement des autres layouts
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setPadding(new Insets(200, 210, 50, 200));
+        vbox.setSpacing(20);
+        root.getChildren().add(vbox);
+
+        // Vbox pour les entrées utilisateur
+        VBox vbox_entree = new VBox();
+        vbox_entree.setAlignment(Pos.CENTER);
+        vbox_entree.setSpacing(10);
+        vbox.getChildren().add(vbox_entree);
+        // Hbox pour le port
+        HBox hb_port = new HBox();
+        hb_port.setAlignment(Pos.CENTER);
+        hb_port.setSpacing(10);
+        vbox_entree.getChildren().add(hb_port);
+
+        Label label_port = new Label("Port:");
+        label_port.setTextFill(Color.rgb(255,255,255));
+        label_port.setPrefWidth(75);
+
+        TextField textField_port = new TextField ("6868");
+
+        hb_port.getChildren().add(label_port);
+        hb_port.getChildren().add(textField_port);
+        // Hbox pour l'addresse IP
+        HBox hb_IP = new HBox();
+        hb_IP.setAlignment(Pos.CENTER);
+        hb_IP.setSpacing(10);
+        vbox_entree.getChildren().add(hb_IP);
+
+        Label label_IP = new Label("Adresse IP:");
+        label_IP.setTextFill(Color.rgb(255,255,255));
+        label_IP.setPrefWidth(75);
+
+        TextField textField_IP = new TextField ("127.0.0.1");
+
+        hb_IP.getChildren().add(label_IP);
+        hb_IP.getChildren().add(textField_IP);
+
+        // Bouton pour heberger
+        Button bouton_heberger = new Button();
+        bouton_heberger.setText("Héberger");
+        bouton_heberger.setPrefWidth(200);
+        vbox.getChildren().add(bouton_heberger);
+        bouton_heberger.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Héberger");
+                int port = Integer.valueOf(textField_port.getText()); //TODO verification entree utilisateur
+                controleur.Start_Server(port);
+            }
+        });
+        // Bouton pour rejoindre
+        Button bouton_rejoindre = new Button();
+        bouton_rejoindre.setText("Rejoindre");
+        bouton_rejoindre.setPrefWidth(200);
+        vbox.getChildren().add(bouton_rejoindre);
+        bouton_rejoindre.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Rejoindre");
+            }
+        });
+    }
     //Scène du jeu
-    public void jouer(Stage primaryStage){
+    public void jouer(Stage primaryStage) {
 
         //Créer l'interface graphique
-        Pane root = setScene(primaryStage);
+        Pane root = Initi_scene(primaryStage);
         Canvas canvaScore = new Canvas(this.largeur, this.hauteur);
         Canvas canvaBulle = new Canvas(this.largeur, this.hauteur);
         Canvas canvaBalle = new Canvas(this.largeur, this.hauteur);
@@ -112,7 +194,6 @@ public class FishHunt extends Application {
         GraphicsContext etageBalle = canvaBalle.getGraphicsContext2D();
         GraphicsContext etageAnimaux = canvaAnimaux.getGraphicsContext2D();
 
-        Controleur controleur = new Controleur();
 
         //Animation centrale du jeu
         AnimationTimer timer = new AnimationTimer() {
@@ -133,13 +214,13 @@ public class FishHunt extends Application {
 
                 //Détecter le clavier pour le debug
                 root.setOnKeyPressed((event) -> {
-                       if (event.getCode() == KeyCode.H || event.getCode() == KeyCode.J || event.getCode() == KeyCode.K || event.getCode() == KeyCode.L) {
-                           controleur.debug(event.getCode());
-                       }
+                    if (event.getCode() == KeyCode.H || event.getCode() == KeyCode.J || event.getCode() == KeyCode.K || event.getCode() == KeyCode.L) {
+                        controleur.debug(event.getCode());
+                    }
                 });
 
                 //Si on est mort, on veut arrêter la partie en cours et recommencer le jeu
-                if(mort){
+                if (mort) {
                     this.stop();
                     recommencerJeu(primaryStage);
                 }
@@ -164,8 +245,8 @@ public class FishHunt extends Application {
         root.getChildren().add(image);
 
         root.setOnMouseMoved((event) -> {
-            image.setX(event.getX() - cote/2);
-            image.setY(event.getY() - cote/2);
+            image.setX(event.getX() - cote / 2);
+            image.setY(event.getY() - cote / 2);
         });
     }
 
@@ -185,7 +266,7 @@ public class FishHunt extends Application {
         mort = état;
     }
 
-    public Pane setScene(Stage primaryStage){
+    public Pane Initi_scene(Stage primaryStage){
         //Créer l'interface graphique
         Pane root = new Pane();
         Scene scene = new Scene(root, this.largeur, this.hauteur);

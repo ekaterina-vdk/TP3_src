@@ -44,4 +44,8 @@ public class Controleur {
         FishHunt.setMorte(état);
     }
 
+    void Start_Server(int port) {
+        Runnable server = new Gestion_serveur(port);
+        new Thread(server).start();
+    }
 }
