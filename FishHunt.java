@@ -35,7 +35,7 @@ public class FishHunt extends Application {
     //Scène d'accueil
     public void commencerJeu(Stage primaryStage){
         mort = false;
-
+        // test
         //Créer l'interface graphique
         Pane root = setScene(primaryStage);
 
