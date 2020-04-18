@@ -1,4 +1,6 @@
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -11,7 +13,10 @@ public class Jeu {
     private int hauteur = 480;  //hauteur du jeu
     private Bulle[][] groupeBulles = new Bulle[3][5];   //3 groupes de 5 bulles
     private LinkedList<Animaux> animaux; //Tout les animaux qui sont sur le jeu
+    private LinkedList<Balle> balles; //Toutes les balles qui sont lancées
     private int score;  //Score total équivalent au nombre d'animaux atteints
+    private int nbrVies; //Nombre de vie restant
+    private Image imageVies; //Poisson représentant une vie
     private double intervalleBulle = 0; //Intervalle de temps auquel les bulles se renouvellent
     private double intervallePoisson = 0;  //Intervalle de temps auquel les poissons se créent
     private double intervalleSpeciaux = 0; //Intervalle de temps auquel les crabes et les étoiles se créent
@@ -21,13 +26,14 @@ public class Jeu {
         //Créer les bulles
         renouvelerBulle();
 
-        //Mettre un premier poisson
-        //Poisson premierPoisson = new Poisson(this.largeur, this.hauteur);
-        //animaux.add(premierPoisson);
+        //Initialisation des listes chaînées
         animaux = new LinkedList<>();
+        balles = new LinkedList<>();
 
-        //Initialisation du score
+        //Initialisation du score et du nombre de vies
         this.score = 0;
+        this.nbrVies = 3;
+        imageVies = new Image("/00.png");
 
         //Initialisation du niveau
         this.niveau = 0;
@@ -42,6 +48,11 @@ public class Jeu {
         etageScore.setTextAlign(TextAlignment.CENTER);
         etageScore.fillText(this.score + "", this.largeur/2, 30);
 
+        //Afficher le nombre de vies
+        for(int i = 0; i < nbrVies; i++) {
+            etageScore.drawImage(imageVies, 245 + (i*50), 40, 40, 40);
+        }
+
         //Afficher les bulles
         for(int i = 0; i < groupeBulles.length; i++) {
             for (int j = 0; j < groupeBulles[i].length; j++) {
@@ -50,7 +61,11 @@ public class Jeu {
         }
 
         //Afficher la balle
-        //balle.draw(etageBalle);
+        if(balles.size() > 0) {
+            for (Balle b : balles) {
+                b.draw(etageBulle);
+            }
+        }
 
         //Afficher les animaux
         etageAnimaux.clearRect(0, 0, this.largeur, this.hauteur);
@@ -83,19 +98,17 @@ public class Jeu {
             intervalleBulle = 0;
         }
 
-
         if(animaux.size() > 0) {
             //Mise à jour des coordonnées des animaux
             for (Animaux ani : animaux) {
-                //System.out.println("Mise à jour " + ani.getX() + "," + ani.getY());
                 ani.update(dt);
             }
 
             //Enlever un animal s'il est en dehors de l'écran
             for(Animaux ani : animaux){
                 if(ani.getX() > this.largeur || ani.getX() < 0 || ani.getY() > this.hauteur || ani.getY() < 0){
-                    //System.out.println("Supression " + ani.getX() + "," + ani.getY());
                     animaux.remove(ani);
+                    nbrVies --;
                 }
             }
         }
@@ -123,8 +136,36 @@ public class Jeu {
             intervalleSpeciaux = 0;
         }
 
+        if(balles.size() > 0){
+            //Mise à jour des coordonnées des balles
+            for(Balle b : balles){
+                b.update(dt);
+            }
 
+            //Enlever une balle si elle n'est plus existante
+            for(Balle b : balles){
+                if(b.getLargeur() < -50){ balles.remove(b); }
+            }
+        }
 
+        //Tester les collisions, s'il y en a une, retirer l'animal du jeu
+        for(Balle b : balles){
+            for(Animaux a : animaux){
+                if(a.intersection(b) && b.getLargeur() <= 0){
+                    score ++;
+                    animaux.remove(a);
+                }
+            }
+        }
+
+        if(nbrVies == 0){
+            Controleur.setMort(true);
+        }
+    }
+
+    public void lancer(double x, double y){
+        Balle nouvelleBalle = new Balle(this.largeur, this.hauteur, x, y);
+        balles.addFirst(nouvelleBalle);
     }
 
     //Changer les groupes de bulles pour des nouvelles

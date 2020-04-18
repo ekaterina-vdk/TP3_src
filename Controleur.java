@@ -21,6 +21,10 @@ public class Controleur {
 
     }
 
+    void lancer(double x, double y){
+        jeu.lancer(x, y);
+    }
+
     //Le tableau des meilleurs scores doit être afficher
     void drawScore(){
 
@@ -36,7 +40,7 @@ public class Controleur {
 
     }
 
-    void setMort(boolean état){
+    static void setMort(boolean état){
         FishHunt.setMorte(état);
     }
 

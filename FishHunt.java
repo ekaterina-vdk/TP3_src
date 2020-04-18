@@ -150,16 +150,14 @@ public class FishHunt extends Application {
         timer.start();
 
         //Lancer des balles
-
         root.setOnMouseClicked((event) -> {
-            //controleur.lancer(event.getX(), event.getY());
+            controleur.lancer(event.getX(), event.getY());
         });
-
 
         //Faire bouger la cible en fonction de la souris
         ImageView image = new ImageView();
         Image logo = new Image("/cible.png");
-        int cote = 30;
+        int cote = 50;
         image.setImage(logo);
         image.setFitWidth(cote);
         image.setPreserveRatio(true);   //Conserver le ratio
@@ -169,13 +167,6 @@ public class FishHunt extends Application {
             image.setX(event.getX() - cote/2);
             image.setY(event.getY() - cote/2);
         });
-
-
-        //Afficher score
-
-        //Afficher poissons morts
-
-
     }
 
     //Scène des meilleurs scores
