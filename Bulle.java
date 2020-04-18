@@ -6,8 +6,8 @@ public class Bulle extends Elements {
     //Constructeur
     public Bulle(double largeurJeu, double hauteurJeu){
         super(largeurJeu, hauteurJeu);
-        this.largeur = (int)(Math.random()*((40 - 10) + 1)) + 10; //Valeur aléaroire en 10 et 40px
-        this.vy = (int)(Math.random()*((450 - 350) + 1)) + 350; //Valeur aléaroire en 350 et 450px
+        this.largeur = (int)(Math.random()*(40 - 10)) + 10; //Valeur aléaroire en 10 et 40px
+        this.vy = (int)(Math.random()*(450 - 350)) + 350; //Valeur aléaroire en 350 et 450px
         this.y = this.hauteurJeu;
         this.couleur = Color.rgb(0, 0, 255, 0.4);
     }

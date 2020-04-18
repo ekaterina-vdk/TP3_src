@@ -12,12 +12,19 @@ public class Jeu {
     private Bulle[][] groupeBulles = new Bulle[3][5];   //3 groupes de 5 bulles
     private LinkedList<Animaux> animaux; //Tout les animaux qui sont sur le jeu
     private int score;  //Score total équivalent au nombre d'animaux atteints
-    private double intervalleTemps = 0; //Intervalle de temps auquel les bulles se renouvellent
+    private double intervalleBulle = 0; //Intervalle de temps auquel les bulles se renouvellent
+    private double intervallePoisson = 0;  //Intervalle de temps auquel les poissons se créent
+    private double intervalleSpeciaux = 0; //Intervalle de temps auquel les crabes et les étoiles se créent
     private int niveau;
 
     public Jeu(){
         //Créer les bulles
         renouvelerBulle();
+
+        //Mettre un premier poisson
+        //Poisson premierPoisson = new Poisson(this.largeur, this.hauteur);
+        //animaux.add(premierPoisson);
+        animaux = new LinkedList<>();
 
         //Initialisation du score
         this.score = 0;
@@ -46,9 +53,13 @@ public class Jeu {
         //balle.draw(etageBalle);
 
         //Afficher les animaux
-        //for(Animaux ani : animaux){
-        //    ani.draw(etageAnimaux);
-        //}
+        etageAnimaux.clearRect(0, 0, this.largeur, this.hauteur);
+        if(animaux.size() > 0) {
+            for (Animaux ani : animaux) {
+                ani.draw(etageAnimaux);
+                //System.out.println("Dessin fait");
+            }
+        }
 
     }
 
@@ -64,25 +75,55 @@ public class Jeu {
                 }
             }
         }
-        intervalleTemps += dt;
+        intervalleBulle += dt;
 
         //Après 3 secondes, on change les 3 groupes de bulles
-        if(intervalleTemps >= 3){
+        if(intervalleBulle >= 3){
             renouvelerBulle();
-            intervalleTemps = 0;
+            intervalleBulle = 0;
         }
 
-        //Mise à jour des coordonnées des animaux
-        //for(Animaux ani: animaux){
-        //    ani.update(dt);
-        //}
 
-        //Enlever un animal s'il est en dehors de l'écran
-        //for(Animaux ani : animaux){
-        //    if(ani.getX() > this.largeur || ani.getX() < 0 || ani.getY() > this.hauteur || ani.getY() < 0){
-         //       animaux.remove(ani);
-        //    }
-        //}
+        if(animaux.size() > 0) {
+            //Mise à jour des coordonnées des animaux
+            for (Animaux ani : animaux) {
+                //System.out.println("Mise à jour " + ani.getX() + "," + ani.getY());
+                ani.update(dt);
+            }
+
+            //Enlever un animal s'il est en dehors de l'écran
+            for(Animaux ani : animaux){
+                if(ani.getX() > this.largeur || ani.getX() < 0 || ani.getY() > this.hauteur || ani.getY() < 0){
+                    //System.out.println("Supression " + ani.getX() + "," + ani.getY());
+                    animaux.remove(ani);
+                }
+            }
+        }
+        intervallePoisson += dt;
+        intervalleSpeciaux += dt;
+
+        //Ajout d'un poisson au 3 secondes et d'une étoile ou d'un crabe aux 5 secondes
+        if(intervallePoisson >= 3){
+            Poisson nouveauPoisson = new Poisson(this. largeur, this.hauteur);
+            //System.out.println("Création Poisson " + nouveauPoisson.getX() + "," + nouveauPoisson.getY());
+            animaux.addFirst(nouveauPoisson);
+            intervallePoisson = 0;
+        }
+        if(intervalleSpeciaux >= 5){
+            double probabilité = Math.random();
+            Animaux nouveauSpecial;
+            if(probabilité < 0.5){
+                nouveauSpecial = new Etoile(this.largeur, this.hauteur);
+            }
+            else{
+                nouveauSpecial = new Crabe(this.largeur, this.hauteur);
+            }
+            //System.out.println("Création Spécial " + nouveauSpecial.getX() + "," + nouveauSpecial.getY());
+            animaux.addFirst(nouveauSpecial);
+            intervalleSpeciaux = 0;
+        }
+
+
 
     }
 

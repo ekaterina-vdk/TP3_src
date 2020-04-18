@@ -71,7 +71,6 @@ public class FishHunt extends Application {
         vb_bouttons.getChildren().add(boutonJeu);
         boutonJeu.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                System.out.println("Je veux jouer");
                 jouer(primaryStage);
             }
         });
