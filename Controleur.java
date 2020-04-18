@@ -1,3 +1,6 @@
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+
 public class Controleur {
 
     Jeu jeu;
@@ -7,12 +10,14 @@ public class Controleur {
     }
 
     //Mise à jour de l'affichage du jeu
-    void drawJeu(){
+    void drawJeu(GraphicsContext etageScore, GraphicsContext etageBulle, GraphicsContext etageBalle, GraphicsContext etageAnimaux){
+        jeu.draw(etageScore, etageBulle, etageBalle, etageAnimaux);
 
     }
 
     //Mise à jour des coordonnées des éléments sur le jeu
-    void updateCoordonnees(){
+    void updateCoordonnees(double deltaTime, GraphicsContext etageBulle, GraphicsContext etageBalle, GraphicsContext etageAnimaux){
+        jeu.update(deltaTime, etageBulle, etageBalle, etageAnimaux);
 
     }
 
@@ -27,7 +32,7 @@ public class Controleur {
     }
 
     //Activer une fonctions du debugage
-    void debug(){
+    void debug(KeyCode lettre){
 
     }
 

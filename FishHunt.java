@@ -1,7 +1,9 @@
 //Ekaterina Van de Kerckhove, 20100493
 //Leslie Moranta,
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -11,6 +13,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -82,32 +85,61 @@ public class FishHunt extends Application {
         Canvas canvaScore = new Canvas(this.largeur, this.hauteur);
         Canvas canvaBulle = new Canvas(this.largeur, this.hauteur);
         Canvas canvaBalle = new Canvas(this.largeur, this.hauteur);
-        Canvas canvaPoisson = new Canvas(this.largeur, this.hauteur);
-        Canvas canvaEtoile = new Canvas(this.largeur, this.hauteur);
-        Canvas canvaCrabe = new Canvas(this.largeur, this.hauteur);
+        Canvas canvaAnimaux = new Canvas(this.largeur, this.hauteur);
 
         root.getChildren().add(canvaScore);
         root.getChildren().add(canvaBulle);
         root.getChildren().add(canvaBalle);
-        root.getChildren().add(canvaPoisson);
-        root.getChildren().add(canvaEtoile);
-        root.getChildren().add(canvaCrabe);
+        root.getChildren().add(canvaAnimaux);
 
-        GraphicsContext étageScore = canvaScore.getGraphicsContext2D();
-        GraphicsContext étageBulle = canvaBulle.getGraphicsContext2D();
-        GraphicsContext étageBalle = canvaBalle.getGraphicsContext2D();
-        GraphicsContext étagePoisson = canvaPoisson.getGraphicsContext2D();
-        GraphicsContext étageEtoile = canvaEtoile.getGraphicsContext2D();
-        GraphicsContext étageCrabe = canvaCrabe.getGraphicsContext2D();
+        GraphicsContext etageScore = canvaScore.getGraphicsContext2D();
+        GraphicsContext etageBulle = canvaBulle.getGraphicsContext2D();
+        GraphicsContext etageBalle = canvaBalle.getGraphicsContext2D();
+        GraphicsContext etageAnimaux = canvaAnimaux.getGraphicsContext2D();
 
+        Controleur controleur = new Controleur();
+
+        //Animation centrale du jeu
+        AnimationTimer timer = new AnimationTimer() {
+            private long lastTime = 0;  //Temps au dernier frame
+
+            @Override
+            public void handle(long now) {
+                if (lastTime == 0) {
+                    lastTime = now;
+                    return;
+                }
+
+                double deltaTime = (now - lastTime) * 1e-9;
+
+                //On demande au contrôleur de mettre à jour les éléments du jeu et de les dessiner sur la fenêtre de jeu
+                controleur.updateCoordonnees(deltaTime, etageBulle, etageBalle, etageAnimaux);
+                controleur.drawJeu(etageScore, etageBulle, etageBalle, etageAnimaux);
+
+                //Détecter le clavier pour le debug
+                root.setOnKeyPressed((event) -> {
+                       if (event.getCode() == KeyCode.H || event.getCode() == KeyCode.J || event.getCode() == KeyCode.K || event.getCode() == KeyCode.L) {
+                           controleur.debug(event.getCode());
+                       }
+                });
+
+                //Si on est mort, on veut arrêter la partie en cours et recommencer le jeu
+                if(mort){
+                    this.stop();
+                    recommencerJeu(primaryStage);
+                }
+
+                lastTime = now;
+            }
+        };
+        timer.start();
 
         //Lancer des balles
-        /*
-        scene.setOnMouseClicked((event) -> {
-            controleur.lancer(event.getX(), event.getY());
+
+        root.setOnMouseClicked((event) -> {
+            //controleur.lancer(event.getX(), event.getY());
         });
 
-         */
 
         //Faire bouger la cible en fonction de la souris
         ImageView image = new ImageView();
@@ -123,22 +155,11 @@ public class FishHunt extends Application {
             image.setY(event.getY() - cote/2);
         });
 
-        //Détecter le clavier pour le debug
-        /*
-        scene.setOnKeyPressed((event) -> {
-            if (event.getCode() == KeyCode.H) {
-                controleur.debug(event);
-            }
-        });
-
-         */
 
         //Afficher score
 
         //Afficher poissons morts
-        if(mort){
-            //recommencerJeu();
-        }
+
 
     }
 

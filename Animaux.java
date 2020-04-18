@@ -1,5 +1,7 @@
 public abstract class Animaux extends Elements {
 
+    protected int niveau;
+
     public Animaux(double largeurJeu, double hauteurJeu){
         super(largeurJeu, hauteurJeu);
     }
