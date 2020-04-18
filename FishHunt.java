@@ -117,7 +117,39 @@ public class FishHunt extends Application {
         vbox.setSpacing(20);
         root.getChildren().add(vbox);
 
-    }
+        // Vbox pour les entrées utilisateur
+        VBox vbox_entree = new VBox();
+        vbox_entree.setAlignment(Pos.CENTER);
+        vbox_entree.setSpacing(10);
+        vbox.getChildren().add(vbox_entree);
+        // Hbox pour le port
+        HBox hb_port = new HBox();
+        hb_port.setAlignment(Pos.CENTER);
+        hb_port.setSpacing(10);
+        vbox_entree.getChildren().add(hb_port);
+
+        Label label_port = new Label("Port:");
+        label_port.setTextFill(Color.rgb(255,255,255));
+        label_port.setPrefWidth(75);
+
+        TextField textField_port = new TextField ("6868");
+
+        hb_port.getChildren().add(label_port);
+        hb_port.getChildren().add(textField_port);
+        // Hbox pour l'addresse IP
+        HBox hb_IP = new HBox();
+        hb_IP.setAlignment(Pos.CENTER);
+        hb_IP.setSpacing(10);
+        vbox_entree.getChildren().add(hb_IP);
+
+        Label label_IP = new Label("Adresse IP:");
+        label_IP.setTextFill(Color.rgb(255,255,255));
+        label_IP.setPrefWidth(75);
+
+        TextField textField_IP = new TextField ("127.0.0.1");
+
+        hb_IP.getChildren().add(label_IP);
+        hb_IP.getChildren().add(textField_IP);
 
         // Bouton pour heberger
         Button bouton_heberger = new Button();
@@ -143,7 +175,7 @@ public class FishHunt extends Application {
         });
     }
     //Scène du jeu
-    public void jouer(Stage primaryStage){
+    public void jouer(Stage primaryStage) {
 
         //Créer l'interface graphique
         Pane root = Initi_scene(primaryStage);
@@ -182,13 +214,13 @@ public class FishHunt extends Application {
 
                 //Détecter le clavier pour le debug
                 root.setOnKeyPressed((event) -> {
-                       if (event.getCode() == KeyCode.H || event.getCode() == KeyCode.J || event.getCode() == KeyCode.K || event.getCode() == KeyCode.L) {
-                           controleur.debug(event.getCode());
-                       }
+                    if (event.getCode() == KeyCode.H || event.getCode() == KeyCode.J || event.getCode() == KeyCode.K || event.getCode() == KeyCode.L) {
+                        controleur.debug(event.getCode());
+                    }
                 });
 
                 //Si on est mort, on veut arrêter la partie en cours et recommencer le jeu
-                if(mort){
+                if (mort) {
                     this.stop();
                     recommencerJeu(primaryStage);
                 }
@@ -204,16 +236,6 @@ public class FishHunt extends Application {
             //controleur.lancer(event.getX(), event.getY());
         });
 
-        // Vbox pour les entrées utilisateur
-        VBox vbox_entree = new VBox();
-        vbox_entree.setAlignment(Pos.CENTER);
-        vbox_entree.setSpacing(10);
-        vbox.getChildren().add(vbox_entree);
-        // Hbox pour le port
-        HBox hb_port = new HBox();
-        hb_port.setAlignment(Pos.CENTER);
-        hb_port.setSpacing(10);
-        vbox_entree.getChildren().add(hb_port);
 
         //Faire bouger la cible en fonction de la souris
         ImageView image = new ImageView();
@@ -225,38 +247,15 @@ public class FishHunt extends Application {
         root.getChildren().add(image);
 
         root.setOnMouseMoved((event) -> {
-            image.setX(event.getX() - cote/2);
-            image.setY(event.getY() - cote/2);
+            image.setX(event.getX() - cote / 2);
+            image.setY(event.getY() - cote / 2);
         });
 
 
         //Afficher score
 
         //Afficher poissons morts
-
-
-        Label label_port = new Label("Port:");
-        label_port.setTextFill(Color.rgb(255,255,255));
-        label_port.setPrefWidth(75);
-
-        TextField textField_port = new TextField ("6868");
-
-        hb_port.getChildren().add(label_port);
-        hb_port.getChildren().add(textField_port);
-        // Hbox pour l'addresse IP
-        HBox hb_IP = new HBox();
-        hb_IP.setAlignment(Pos.CENTER);
-        hb_IP.setSpacing(10);
-        vbox_entree.getChildren().add(hb_IP);
-
-        Label label_IP = new Label("Adresse IP:");
-        label_IP.setTextFill(Color.rgb(255,255,255));
-        label_IP.setPrefWidth(75);
-
-        TextField textField_IP = new TextField ("127.0.0.1");
-
-        hb_IP.getChildren().add(label_IP);
-        hb_IP.getChildren().add(textField_IP);
+    }
 
     //Scène des meilleurs scores
     public void meilleursScores(){
