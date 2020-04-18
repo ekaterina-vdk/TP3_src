@@ -12,6 +12,14 @@ public class Jeu {
 
     }
 
+    public void draw(){
+
+    }
+
+    public void update(){
+
+    }
+
     //Changer les groupes de bulles pour des nouvelles
     public void renouvelerBulle(){
         for(int i = 0; i < groupeBulles.length; i++) {
