@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -29,7 +30,7 @@ public class FishHunt extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-            jouer(primaryStage);
+            commencerJeu(primaryStage);
     }
 
     //Scène d'accueil
@@ -39,41 +40,56 @@ public class FishHunt extends Application {
         //Créer l'interface graphique
         Pane root = setScene(primaryStage);
 
+        // Insérer Vbox dans le Panel pour le placement
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        int logo_width = 300;
+        double padding_sides = (largeur - logo_width)/2;
+        vbox.setPadding(new Insets(50, padding_sides, 0, padding_sides));
+        vbox.setSpacing(50);
+        root.getChildren().add(vbox);
+
         //Présenter le logo
         ImageView image = new ImageView();
         Image logo = new Image("/logo.png");
         image.setImage(logo);
-        image.setX(170);
-        image.setY(75);
-        image.setFitWidth(300);
+        image.setFitWidth(logo_width);
         image.setPreserveRatio(true);   //Conserver le ratio
-        root.getChildren().add(image);
+        vbox.getChildren().add(image);
 
 
         //Présenter les 2 boutons
-
-        Button boutonJeu = new Button("Nouvelle partie!");
-        Button boutonScore = new Button("Meilleurs scores");
-
-        //VBox groupeBoutons = new VBox();
-        //groupeBoutons.getChildren().add(boutonJeu);
-        //groupeBoutons.getChildren().add(boutonScore);
-
-        root.getChildren().add(boutonJeu);
-
+        // Vbox specific au boutons
+        VBox vb_bouttons = new VBox();
+        vb_bouttons.setAlignment(Pos.CENTER);
+        vb_bouttons.setSpacing(10);
+        vbox.getChildren().add(vb_bouttons);
+        // Bouton jeu
+        Button boutonJeu = new Button();
+        boutonJeu.setText("Nouvelle partie!");
+        boutonJeu.setPrefWidth(200);
+        vb_bouttons.getChildren().add(boutonJeu);
         boutonJeu.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("Je veux jouer");
+                jouer(primaryStage);
+            }
+        });
+
+        // Bouton score
+        Button boutonScore = new Button();
+        boutonScore.setText("Meilleurs scores");
+        boutonScore.setPrefWidth(200);
+        vb_bouttons.getChildren().add(boutonScore);
+        boutonScore.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Je veux voir les scores");
                 //jouer();
             }
         });
-/*
-        boutonScore.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                meilleursScores();
-            }
-        });
-     */
+
+
+
 
     }
 
