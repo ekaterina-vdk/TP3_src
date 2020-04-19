@@ -3,14 +3,12 @@ import javafx.scene.image.Image;
 
 public abstract class Animaux extends Elements {
 
-    protected int niveau;
     protected Image animalActuel;
 
-    public Animaux(double largeurJeu, double hauteurJeu){
+    public Animaux(double largeurJeu, double hauteurJeu, int niveau){
         super(largeurJeu, hauteurJeu);
         this.largeur = 100;
         this.hauteur = 100;
-
         this.y = Math.random() *(4/5.0*this.hauteurJeu - 1/5.0*this.hauteurJeu)+ 1/5.0*this.hauteurJeu; //Hauteur initiale se situe entre le 1/5 et le 4/5 de le hauteur du jeu
         this.x = Math.round(Math.random())*this.largeurJeu; //Position initiale x est à gauche ou à droite du jeu
     }

@@ -90,7 +90,7 @@ public class FishHunt extends Application {
         });
         // Bouton multijoueur
         Button boutonmulti = new Button();
-        boutonmulti.setText("Multijouer");
+        boutonmulti.setText("Multijoueur");
         boutonmulti.setPrefWidth(200);
         vb_bouttons.getChildren().add(boutonmulti);
         boutonmulti.setOnAction(new EventHandler<ActionEvent>() {
@@ -209,7 +209,7 @@ public class FishHunt extends Application {
                 double deltaTime = (now - lastTime) * 1e-9;
 
                 //On demande au contrôleur de mettre à jour les éléments du jeu et de les dessiner sur la fenêtre de jeu
-                controleur.updateCoordonnees(deltaTime, etageBulle, etageBalle, etageAnimaux);
+                controleur.updateCoordonnees(deltaTime);
                 controleur.drawJeu(etageScore, etageBulle, etageBalle, etageAnimaux);
 
                 //Détecter le clavier pour le debug

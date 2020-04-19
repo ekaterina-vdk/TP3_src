@@ -16,8 +16,8 @@ public class Controleur {
     }
 
     //Mise à jour des coordonnées des éléments sur le jeu
-    void updateCoordonnees(double deltaTime, GraphicsContext etageBulle, GraphicsContext etageBalle, GraphicsContext etageAnimaux){
-        jeu.update(deltaTime, etageBulle, etageBalle, etageAnimaux);
+    void updateCoordonnees(double deltaTime){
+        jeu.update(deltaTime);
 
     }
 
