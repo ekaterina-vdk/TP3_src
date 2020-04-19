@@ -1,10 +1,9 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-
 import java.util.LinkedList;
 
 public class Jeu {
@@ -45,7 +44,8 @@ public class Jeu {
         affichageNiveau = true;
     }
 
-    public void draw(GraphicsContext etageScore, GraphicsContext etageBulle, GraphicsContext etageBalle, GraphicsContext etageAnimaux){
+    //Affichage de tous les éléments dans la scène
+    public void draw(GraphicsContext etageScore, GraphicsContext etageBulle, GraphicsContext etageAnimaux){
         //Afficher le score
         etageScore.clearRect(0, 0, this.largeur, this.hauteur);
         etageScore.setFill(Color.WHITE);
@@ -62,7 +62,10 @@ public class Jeu {
         if(affichageNiveau){
             if(nbrVies == 0){   //On est mort, donc on affiche Game Over
                 afficherNiveau(etageScore, "Game Over");
-                if(intervalleNiveau < 0){ Controleur.setMort(true); }   //Après 3 secondes, on passe à l'écran des meilleurs scores
+                if(intervalleNiveau < 0){ //Après 3 secondes, on veut passer à la scène des meilleurs scores
+                    Controleur.setMort(true);
+                    Controleur.setDernierScore(this.score);
+                }
             }
             else if(intervalleNiveau >= 0){ //On passe au prochain niveau
                 afficherNiveau(etageScore, "Level " + niveau);
@@ -81,7 +84,7 @@ public class Jeu {
             }
         }
 
-        //Afficher la balle
+        //Afficher les balles
         if(balles.size() > 0) {
             for (Balle b : balles) {
                 b.draw(etageBulle);
@@ -93,12 +96,11 @@ public class Jeu {
         if(animaux.size() > 0) {
             for (Animaux ani : animaux) {
                 ani.draw(etageAnimaux);
-                //System.out.println("Dessin fait");
             }
         }
-
     }
 
+    //Mise à jour de tous les éléments dans la scène
     public void update(double dt){
         if(affichageNiveau){    //Si le niveau est actuellement affiché, on décrémente le chronomètre
             intervalleNiveau -= dt;
@@ -128,7 +130,7 @@ public class Jeu {
                 ani.update(dt);
             }
 
-            //Enlever un animal s'il est en dehors de l'écran
+            //Enlever un animal s'il est en dehors de l'écran et retirer une vie
             for(Animaux ani : animaux){
                 if(ani.getX() > this.largeur || ani.getX() < ani.getLargeur()*-1 || ani.getY() > this.hauteur || ani.getY() < ani.getHauteur()*-1){
                     animaux.remove(ani);
@@ -171,7 +173,7 @@ public class Jeu {
             }
         }
 
-        //Tester les collisions, s'il y en a une, retirer l'animal du jeu
+        //Tester les collisions, s'il y en a une, retirer l'animal du jeu et ajuster le score
         for(Balle b : balles){
             for(Animaux a : animaux){
                 if(a.intersection(b) && b.getLargeur() <= 0){
@@ -192,6 +194,7 @@ public class Jeu {
         }
     }
 
+    //Création d'une nouvelle balle à lancer
     public void lancer(double x, double y){
         Balle nouvelleBalle = new Balle(this.largeur, this.hauteur, x, y);
         balles.addFirst(nouvelleBalle);
@@ -208,10 +211,34 @@ public class Jeu {
         }
     }
 
+    //Affichage du nouveau niveau atteint
     public void afficherNiveau(GraphicsContext etageScore, String texte){
         etageScore.setFill(Color.WHITE);
         etageScore.setFont(Font.font("Purisa", 50));
         etageScore.setTextAlign(TextAlignment.CENTER);
         etageScore.fillText(texte, this.largeur/2, this.hauteur/2);
+    }
+
+    //Options de debug
+    public void debug(KeyCode touche){
+        if(touche == KeyCode.H){    //On augmente manuellement d'un niveau
+            this.niveau ++;
+            animaux.clear();
+            affichageNiveau = true;
+        }
+        else if(touche == KeyCode.J){   //On augmente le score de +1
+            score ++;
+            if(score % 5 == 0){ //Si on a atteint 5 poissons depuis le début du niveau, on passe au prochain
+                niveau ++;
+                affichageNiveau = true;
+                animaux.clear();    //On enlève les animaux actuellement sur le jeu
+            }
+        }
+        else if(touche == KeyCode.K){   //On augmente le nombre de chance de rater un poisson de +1, sans dépasser le maximum de 3
+            if(nbrVies < 3){ nbrVies ++; }
+        }
+        else if(touche == KeyCode.L){   //On perd la partie automatiquement
+            nbrVies = 0;
+        }
     }
 }
