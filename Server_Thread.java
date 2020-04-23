@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
 /**
@@ -16,6 +17,7 @@ public class Server_Thread extends Thread {
 
     public void run() {
         try {
+
             SocketChannel chan = socket.getChannel();
 
             InputStream input = socket.getInputStream();
@@ -28,12 +30,19 @@ public class Server_Thread extends Thread {
             String text;
 
             do {
+                // Bytebuffer contenant toutes les infos
+                byte[] bb = Traducteur.send();
+
+                output.write(bb);
+
+
+
                 text = reader.readLine();
                 System.out.println("Server input: " + text);
 
-                String server_output = "no you";
-                writer.println(server_output);
-                System.out.println("Server output: " + server_output);
+                //String server_output = "no you";
+                //writer.println(server_output);
+                //System.out.println("Server output: " + server_output);
 
             } while (!text.equals("stop"));
 

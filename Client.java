@@ -1,5 +1,7 @@
 import java.io.*;
 import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 import java.util.Scanner;
 
 /**
@@ -20,13 +22,14 @@ public class Client {
         int port = 6868;
 
         try (Socket socket = new Socket(hostname, port)) {
+            SocketChannel chan = socket.getChannel();
 
             OutputStream output = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
 
             Console console = System.console();
             String text;
-
+            System.out.println("Connection réussite!");
             do {
                 Scanner user_input = new Scanner(System.in);
                 text = user_input.nextLine();
@@ -35,11 +38,24 @@ public class Client {
                 System.out.println("client output: " + text);
 
                 InputStream input = socket.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
-                String time = reader.readLine();
+                byte[] data      = new byte[1024];
+                int    bytesRead = input.read(data);
+                short[] values;
+                System.out.println("client output: ");
+                while(bytesRead != -1) {
+                    System.out.println((short)(bytesRead));
 
-                System.out.println("client input: "+time);
+                    bytesRead = input.read(data);
+                }
+                input.close();
+
+
+                //BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+                //String time = reader.readLine();
+
+                //System.out.println("client input: "+time);
 
             } while (true);
 
